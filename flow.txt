@@ -1,0 +1,105 @@
+                         USER
+                           |
+                           ↓
+                    Route 53 (DNS)                                               flow 
+                           |
+                           ↓
+                     AWS WAF
+                           |
+                           ↓
+                 Web ALB : 80/443
+                  (Internet-facing)
+                           |
+                    ┌──────┴──────┐
+                    ↓             ↓
+                 Nginx #1      Nginx #2
+                 Web Tier      Web Tier
+                    |             |
+                    └──────┬──────┘
+                           ↓
+                  Internal App ALB
+                       : 8080
+                           |
+                    ┌──────┴──────┐
+                    ↓             ↓
+                 Tomcat #1     Tomcat #2
+                 App Tier      App Tier
+                    |             |
+                    └──────┬──────┘
+                           ↓
+                     Amazon RDS
+                       MySQL
+                       : 3306
+
+
+
+
+
+
+
+User
+ ↓
+Route 53
+ ↓
+AWS WAF
+ ↓
+Internet-facing Web ALB : 80/443
+ ↓
+Nginx Web Tier : 80
+ ↓
+Internal App ALB : 8080
+ ↓
+Tomcat App Tier : 8080
+ ↓
+Amazon RDS MySQL : 3306
+
+
+
+
+
+
+
+                    ┌──────────────┐
+                    │     IAM      │
+                    └──────┬───────┘
+                           ↓
+              EC2 / ALB / RDS permissions
+
+
+EC2 / ALB / RDS
+      ↓
+ CloudWatch
+      ↓
+ CloudWatch Alarm
+      ↓
+     SNS
+      ↓
+    Email
+
+
+VPC
+ ↓
+VPC Flow Logs
+ ↓
+CloudWatch Logs
+
+
+
+
+
+
+
+
+Web ALB
+   ↓
+Nginx ASG
+   ├── Nginx #1
+   ├── Nginx #2
+   └── Nginx #3 (when required)
+
+Internal App ALB
+   ↓
+Tomcat ASG
+   ├── Tomcat #1
+   ├── Tomcat #2
+   └── Tomcat #3 (when required)
